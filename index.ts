@@ -6,6 +6,7 @@ import { connect } from "./config/database";
 import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
 import cartRoutes from "./routes/cartRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
 
 import { AppError, globalErrorHandler } from "./middlewares/ErrorHandler";
 
@@ -24,6 +25,7 @@ app.use("/", (req: Request, res: Response, next: NextFunction) => {
 
 app.use("/users", userRoutes);
 app.use("/cart", cartRoutes);
+app.use("/payment", paymentRoutes);
 app.use("/", authRoutes);
 
 app.all("*", (req, res, next) => {

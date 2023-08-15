@@ -1,0 +1,47 @@
+# Dependency directories
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+
+# Optional npm cache directory
+.npm
+
+# Output directories
+dist/
+build/
+out/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+*.dbproj
+*.VC.db
+*.obj
+*.pdb
+*.user
+*.iws
+*.bak
+*.cache
+*.suo
+*.log
+*.log.*
+*.bak.*
+*.cscope.*
+
+# Testing and coverage
+coverage/
+
+# OS generated files
+.DS_Store
+Thumbs.db
