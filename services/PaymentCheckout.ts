@@ -26,6 +26,11 @@ type CheckoutItems = {
   quantity: number;
   payment_method_types: string[];
 };
+
+type ErrorResponse = {
+  code: string;
+  detail: string;
+};
 export const createCheckout = async (items: CheckoutItems) => {
   const { payment_method_types, ...data } = items;
   const options = {
@@ -62,8 +67,14 @@ export const createCheckout = async (items: CheckoutItems) => {
       console.log(response.data.data);
       return response.data.data;
     })
-    .catch(function (error) {
-      console.error(error);
+    .catch(function (error): ErrorResponse {
+      // console.error(error.response.data.errors);
+      const { code, detail } = error.response.data.errors[0];
+      console.log(error.response.data.errors[0]);
+      return {
+        code,
+        detail,
+      };
     });
 };
 
@@ -83,7 +94,40 @@ export const retrieveCheckout = async (checkout_session_id: string) => {
       console.log(response.data);
       return response.data.data;
     })
-    .catch(function (error) {
-      console.error(error);
+    .catch(function (error): ErrorResponse {
+      // console.error(error.response.data.errors);
+      const { code, detail } = error.response.data.errors[0];
+      console.log(error.response.data.errors[0]);
+      return {
+        code,
+        detail,
+      };
+    });
+};
+
+export const expireCheckout = async (checkout_session_id: string) => {
+  const options = {
+    method: "GET",
+    url: `${PAYMONGO_BASE_URL}/checkout_sessions/${checkout_session_id}/expire`,
+    headers: {
+      accept: "application/json",
+      authorization: authorizationHeaderValue,
+    },
+  };
+
+  return await axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+      return response.data.data;
+    })
+    .catch(function (error): ErrorResponse {
+      // console.error(error.response.data.errors);
+      const { code, detail } = error.response.data.errors[0];
+      console.log(error.response.data.errors[0]);
+      return {
+        code,
+        detail,
+      };
     });
 };
