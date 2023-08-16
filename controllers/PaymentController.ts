@@ -6,7 +6,11 @@ import {
   CheckoutSessionId,
   Result,
 } from "../types/PaymentTypes";
-import { createCheckout, retrieveCheckout } from "../services/PaymentCheckout";
+import {
+  createCheckout,
+  retrieveCheckout,
+  expireCheckout,
+} from "../services/PaymentCheckout";
 import { AppError } from "../middlewares/ErrorHandler";
 import { z } from "zod";
 
@@ -67,6 +71,8 @@ export const getCheckout: PaymentFunc = async (req, res) => {
       CheckoutSessionId.parse(req.query.checkout_session_id)
     );
 
+    console.log(checkout);
+
     const result: Result = {
       client_key: checkout.id,
       status: checkout.attributes.status,
@@ -112,11 +118,17 @@ export const getCheckout: PaymentFunc = async (req, res) => {
   }
 };
 
-export const deleteCheckout: PaymentFunc = async (req, res) => {
+export const deleteCheckout: PaymentFunc = async (req, res, next) => {
   try {
-    const checkout = await retrieveCheckout(
+    const checkout = await expireCheckout(
       CheckoutSessionId.parse(req.query.checkout_session_id)
     );
+
+    if (checkout.code) {
+      if (checkout.detail.includes("expired")) {
+        return next(new AppError("Checkout session is already expired", 400));
+      }
+    }
 
     const result: Result = {
       client_key: checkout.id,

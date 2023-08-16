@@ -91,12 +91,13 @@ export const retrieveCheckout = async (checkout_session_id: string) => {
   return await axios
     .request(options)
     .then(function (response) {
-      console.log(response.data);
       return response.data.data;
     })
     .catch(function (error): ErrorResponse {
       // console.error(error.response.data.errors);
       const { code, detail } = error.response.data.errors[0];
+      console.log("error");
+      console.log(error);
       console.log(error.response.data.errors[0]);
       return {
         code,
@@ -107,7 +108,7 @@ export const retrieveCheckout = async (checkout_session_id: string) => {
 
 export const expireCheckout = async (checkout_session_id: string) => {
   const options = {
-    method: "GET",
+    method: "POST",
     url: `${PAYMONGO_BASE_URL}/checkout_sessions/${checkout_session_id}/expire`,
     headers: {
       accept: "application/json",
@@ -115,14 +116,18 @@ export const expireCheckout = async (checkout_session_id: string) => {
     },
   };
 
+  console.log(options);
+
   return await axios
     .request(options)
     .then(function (response) {
       console.log(response.data);
+      console.log("success");
       return response.data.data;
     })
     .catch(function (error): ErrorResponse {
       // console.error(error.response.data.errors);
+      console.log("error");
       const { code, detail } = error.response.data.errors[0];
       console.log(error.response.data.errors[0]);
       return {
