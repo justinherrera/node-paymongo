@@ -66,3 +66,24 @@ export const createCheckout = async (items: CheckoutItems) => {
       console.error(error);
     });
 };
+
+export const retrieveCheckout = async (checkout_session_id: string) => {
+  const options = {
+    method: "GET",
+    url: `${PAYMONGO_BASE_URL}/checkout_sessions/${checkout_session_id}`,
+    headers: {
+      accept: "application/json",
+      authorization: authorizationHeaderValue,
+    },
+  };
+
+  return await axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+      return response.data.data;
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+};

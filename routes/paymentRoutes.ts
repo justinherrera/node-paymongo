@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
-import { addCheckout } from "../controllers/PaymentController";
+import { addCheckout, getCheckout } from "../controllers/PaymentController";
 
 const router = express.Router();
 
-router.post("/", addCheckout);
+router.post("/create-checkout", addCheckout);
+router.get("/retrieve-checkout", getCheckout);
 // .get("/", getProducts);
 // router
 //   .patch("/:productId", updateProduct)

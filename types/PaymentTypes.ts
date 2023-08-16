@@ -38,6 +38,8 @@ export const CheckoutResponse = z.object({
 });
 
 export type Result = z.infer<typeof CheckoutResponse>;
+
+export const CheckoutSessionId = z.string();
 export const PaymentSchema = z.object({
   name: z.string().min(5),
   currency: z.string().max(3),
