@@ -57,30 +57,29 @@ export const createPayment = async (items: IntentItems) => {
     });
 };
 
-// export const retrieveCheckout = async (checkout_session_id: string) => {
-//   const options = {
-//     method: "GET",
-//     url: `${PAYMONGO_BASE_URL}/checkout_sessions/${checkout_session_id}`,
-//     headers: {
-//       accept: "application/json",
-//       authorization: authorizationHeaderValue,
-//     },
-//   };
+export const retrievePayment = async (payment_id: string) => {
+  const options = {
+    method: "GET",
+    url: `${PAYMONGO_BASE_URL}/payment_intents/${payment_id}`,
+    headers: {
+      accept: "application/json",
+      authorization: authorizationHeaderValue,
+    },
+  };
 
-//   return await axios
-//     .request(options)
-//     .then(function (response) {
-//       return response.data.data;
-//     })
-//     .catch(function (error): ErrorResponse {
-//       // console.error(error.response.data.errors);
-//       const { code, detail } = error.response.data.errors[0];
-//       console.log("error");
-//       console.log(error);
-//       console.log(error.response.data.errors[0]);
-//       return {
-//         code,
-//         detail,
-//       };
-//     });
-// };
+  return await axios
+    .request(options)
+    .then(function (response) {
+      return response.data.data;
+    })
+    .catch(function (error): ErrorResponse {
+      // console.error(error.response.data.errors);
+      const { code, detail } = error.response.data.errors[0];
+
+      console.log(error.errors[0]);
+      return {
+        code,
+        detail,
+      };
+    });
+};

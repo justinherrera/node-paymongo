@@ -19,6 +19,7 @@ console.log(authorizationHeaderValue);
 //   GRAB_PAY = "grab_pay",
 //   PAYMAYA = "paymaya",
 // }
+
 type CheckoutItems = {
   currency: string;
   amount: number;
@@ -55,7 +56,7 @@ export const createCheckout = async (items: CheckoutItems) => {
               quantity: data.quantity,
             },
           ],
-          payment_method_types: payment_method_types,
+          payment_method_types,
         },
       },
     },

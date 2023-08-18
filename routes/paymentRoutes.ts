@@ -4,14 +4,19 @@ import {
   getCheckout,
   deleteCheckout,
   addPayment,
+  getPayment,
 } from "../controllers/PaymentController";
 
 const router = express.Router();
 
+// checkout
 router.post("/create-checkout", addCheckout);
 router.get("/retrieve-checkout", getCheckout);
 router.get("/expire-checkout", deleteCheckout);
+
+// payments
 router.post("/create-payment", addPayment);
+router.get("/retrieve-payment", getPayment);
 // .get("/", getProducts);
 // router
 //   .patch("/:productId", updateProduct)

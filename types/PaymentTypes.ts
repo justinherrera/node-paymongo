@@ -28,23 +28,42 @@ export enum PaymentMethods {
 }
 
 export const CheckoutResponse = z.object({
-  client_key: z.string(),
-  status: z.string(),
-  billing: z.object({
-    email: z.nullable(z.string()),
-    name: z.nullable(z.string()),
-    phone: z.nullable(z.string()),
+  id: z.string(),
+  type: z.string(),
+  attributes: z.object({
+    billing: z.object({
+      address: z.object({}),
+      email: z.null(),
+      name: z.null(),
+      phone: z.null(),
+    }),
+    billing_information_fields_editable: z.string(),
+    cancel_url: z.null(),
+    checkout_url: z.string().url(),
+    client_key: z.string(),
+    customer_email: z.nullable(z.string()),
+    description: z.nullable(z.string()),
+    line_items: z.array(z.object({})),
+    livemode: z.boolean(),
+    merchant: z.string(),
+    // origin: z.null(),
+    payments: z.array(z.object({})),
+    payment_intent: z.object({
+      id: z.string(),
+      type: z.string(),
+      attributes: z.object({}),
+    }),
+    payment_method_types: z.array(z.string()),
+    reference_number: z.null(),
+    send_email_receipt: z.boolean(),
+    show_description: z.boolean(),
+    show_line_items: z.boolean(),
+    status: z.string(),
+    success_url: z.null(),
+    created_at: z.number(),
+    updated_at: z.number(),
+    metadata: z.null(),
   }),
-  payment_intent_id: z.string(),
-  line_items: z.object({
-    name: z.string(),
-    quantity: z.number(),
-    amount: z.number(),
-    currency: z.string(),
-  }),
-  checkout_url: z.string(),
-  payment_method_types: z.array(z.string()),
-  merchant: z.string(),
 });
 
 export const PaymentResponse = z.object({
@@ -80,30 +99,34 @@ export type PaymentResult = z.infer<typeof PaymentResponse>;
 export type CheckoutResult = z.infer<typeof CheckoutResponse>;
 
 export const CheckoutSessionId = z.string();
-export const CheckoutSchema = z.object({
-  name: z.string().min(5),
-  currency: z.string().max(3),
-  amount: z.number(),
-  quantity: z.number().min(1).max(1000000000),
-  payment_method_types: z.array(z.string()),
-  //   payment_method_types: z.array(z.nativeEnum(PaymentMethod)),
-});
+export const PaymentId = z.string();
+export const CheckoutSchema = z
+  .object({
+    name: z.string().min(5),
+    currency: z.string().max(3),
+    amount: z.number(),
+    quantity: z.number().min(1).max(1000000000),
+    payment_method_types: z.array(z.string()),
+  })
+  .required();
 
-export const PaymentSchema = z.object({
-  amount: z.number(),
-  payment_method_allowed: z.array(z.string()),
-  payment_method_options: z.object({
-    card: z.object({ request_three_d_secure: z.string() }),
-  }),
-  currency: z.string().max(3),
-  capture_type: z.string(),
-});
+export const PaymentSchema = z
+  .object({
+    amount: z.number(),
+    payment_method_allowed: z.array(z.string()),
+    payment_method_options: z.object({
+      card: z.object({ request_three_d_secure: z.string() }),
+    }),
+    currency: z.string().max(3),
+    capture_type: z.string(),
+  })
+  .required();
 
 export const { parse } = z.discriminatedUnion("status", [
   z.object({
     status: z.literal("success"),
-    // data: z.union([CheckoutResponse, PaymentResponse]),
-    data: PaymentResponse,
+    data: z.union([CheckoutResponse, PaymentResponse]),
+    // data: PaymentResponse,
   }),
   z.object({
     status: z.literal("failed"),
