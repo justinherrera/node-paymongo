@@ -69,6 +69,40 @@ export const PaymentIntentResponse = z.object({
   }),
 });
 
+export const AttachPaymentIntentResponse = z.object({
+  id: z.string(),
+  type: z.string(),
+  attributes: z.object({
+    amount: z.number(),
+    capture_type: z.string(),
+    client_key: z.string(),
+    currency: z.string(),
+    description: z.nullable(z.string()),
+    livemode: z.boolean(),
+    statement_descriptor: z.string(),
+    status: z.string(),
+    last_payment_error: z.nullable(z.unknown()), // Modify this type accordingly
+    payment_method_allowed: z.array(z.string()),
+    payments: z.array(z.unknown()), // Modify this type accordingly
+    next_action: z.object({
+      type: z.string(),
+      redirect: z.object({
+        url: z.string().url(),
+        return_url: z.string().url(),
+      }),
+    }),
+    payment_method_options: z.object({
+      card: z.object({
+        request_three_d_secure: z.string(),
+      }),
+    }),
+    metadata: z.unknown(), // Modify this type accordingly
+    setup_future_usage: z.nullable(z.unknown()), // Modify this type accordingly
+    created_at: z.number(),
+    updated_at: z.number(),
+  }),
+});
+
 const PaymentMethodResponse = z.object({
   id: z.string(),
   type: z.literal("payment_method"),
@@ -151,6 +185,7 @@ export const { parse } = z.discriminatedUnion("status", [
       PaymentMethodResponse,
       SourceResponse,
       PaymentResponse,
+      AttachPaymentIntentResponse,
     ]),
     // data: PaymentResponse,
   }),

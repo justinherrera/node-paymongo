@@ -21,6 +21,11 @@ type IntentItems = {
   };
 };
 
+type AttachItems = {
+  payment_method: string;
+  return_url: string;
+};
+
 type ErrorResponse = {
   code: string;
   detail: string;
@@ -77,6 +82,41 @@ export const retrievePaymentIntent = async (payment_id: string) => {
       const { code, detail } = error.response.data.errors[0];
 
       console.log(error.errors[0]);
+      return {
+        code,
+        detail,
+      };
+    });
+};
+
+export const attachPaymentIntent = async (
+  payment_intent_id: string,
+  items: AttachItems
+) => {
+  const options = {
+    method: "POST",
+    url: `${PAYMONGO_BASE_URL}/payment_intents/${payment_intent_id}/attach`,
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      authorization: authorizationHeaderValue,
+    },
+    data: {
+      data: {
+        attributes: items,
+      },
+    },
+  };
+
+  return await axios
+    .request(options)
+    .then(function (response) {
+      return response.data.data;
+    })
+    .catch(function (error): ErrorResponse {
+      // console.error(error.response.data.errors);
+      const { code, detail } = error.response.data.errors[0];
+      //   console.log(error.response.data.errors[0]);
       return {
         code,
         detail,

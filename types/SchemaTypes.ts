@@ -22,6 +22,11 @@ export const PaymentIntentSchema = z
   })
   .required();
 
+export const AttachPaymentIntentSchema = z.object({
+  payment_method: z.string(),
+  return_url: z.string(),
+});
+
 export const PaymentTypeSchema = z.object({
   type: z.string(),
 });
