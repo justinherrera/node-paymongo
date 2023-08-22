@@ -95,6 +95,20 @@ export const PaymentResponse = z.object({
     updated_at: z.number(),
   }),
 });
+
+const PaymentMethodResponse = z.object({
+  id: z.string(),
+  type: z.literal("payment_method"),
+  attributes: z.object({
+    livemode: z.boolean(),
+    type: z.string(), // This can be further restricted using z.enum
+    billing: z.null(),
+    created_at: z.number(),
+    updated_at: z.number(),
+    details: z.null(),
+    metadata: z.null(),
+  }),
+});
 export type PaymentResult = z.infer<typeof PaymentResponse>;
 export type CheckoutResult = z.infer<typeof CheckoutResponse>;
 
@@ -122,10 +136,14 @@ export const PaymentSchema = z
   })
   .required();
 
+export const PaymentTypeSchema = z.object({
+  type: z.string(),
+});
+
 export const { parse } = z.discriminatedUnion("status", [
   z.object({
     status: z.literal("success"),
-    data: z.union([CheckoutResponse, PaymentResponse]),
+    data: z.union([CheckoutResponse, PaymentResponse, PaymentMethodResponse]),
     // data: PaymentResponse,
   }),
   z.object({

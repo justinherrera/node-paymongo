@@ -8,12 +8,14 @@ import {
   PaymentId,
   PaymentResult,
   CheckoutResult,
+  PaymentTypeSchema,
 } from "../types/PaymentTypes";
 import {
   createCheckout,
   retrieveCheckout,
   expireCheckout,
 } from "../services/PaymentCheckout";
+import { createPaymentMethod } from "../services/PaymentMethod";
 import { createPayment, retrievePayment } from "../services/PaymentIntent";
 import { AppError } from "../middlewares/ErrorHandler";
 import { z } from "zod";
@@ -204,6 +206,48 @@ export const getPayment: PaymentFunc = async (req, res, next) => {
         .json(parse({ status: "failed", error: error.errors[0].message }));
     }
     // console.error("Error checking out:", error.response.data.errors);
+    res
+      .status(500)
+      .json(parse({ status: "failed", error: "Internal Server Error" }));
+  }
+};
+
+// Payment Method
+
+export const addPaymentMethod: PaymentFunc = async (req, res, next) => {
+  try {
+    const payment = await createPaymentMethod(
+      PaymentTypeSchema.parse(req.body)
+    );
+
+    if (payment.code) {
+      if (payment.detail.includes("payment_method_type")) {
+        return next(new AppError("Invalid Payment Method", 400));
+      }
+    }
+
+    res.status(200).json(
+      parse({
+        status: "success",
+        data: payment,
+      })
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.log(error.errors[0]);
+      if (error.errors[0].path) {
+        const path = error.errors[0].path[0];
+        res
+          .status(400)
+          .json(
+            parse({ status: "failed", error: `Field ${path} is required` })
+          );
+      }
+      res
+        .status(400)
+        .json(parse({ status: "failed", error: error.errors[0].message }));
+    }
+
     res
       .status(500)
       .json(parse({ status: "failed", error: "Internal Server Error" }));
