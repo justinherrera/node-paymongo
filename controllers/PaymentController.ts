@@ -1,16 +1,15 @@
 import {
-  CheckoutSchema,
-  PaymentSchema,
   PaymentFunc,
-  parse,
-  CheckoutResponse,
   CheckoutSessionId,
   PaymentId,
-  PaymentResult,
-  CheckoutResult,
+} from "../types/PaymentTypes";
+import {
+  CheckoutSchema,
+  PaymentSchema,
   PaymentTypeSchema,
   SourceSchema,
-} from "../types/PaymentTypes";
+} from "../types/SchemaTypes";
+import { parse } from "../types/ResponseTypes";
 import {
   createCheckout,
   retrieveCheckout,
