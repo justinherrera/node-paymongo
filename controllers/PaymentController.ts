@@ -347,7 +347,7 @@ export const addPayment: PaymentFunc = async (req, res, next) => {
   try {
     const payment = await createPayment(PaymentSchema.parse(req.body));
 
-    console.log(payment);
+    // the source id needs to be authorize first
     if (payment.code) {
       if (payment.code.includes("resource_not_chargeable_state")) {
         return next(new AppError(payment.detail, 400));
