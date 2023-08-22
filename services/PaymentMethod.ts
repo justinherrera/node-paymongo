@@ -49,3 +49,30 @@ export const createPaymentMethod = async (items: PaymentMethodItems) => {
       };
     });
 };
+
+export const retrievePaymentMethod = async (payment_method_id: string) => {
+  const options = {
+    method: "GET",
+    url: `${PAYMONGO_BASE_URL}/payment_methods/${payment_method_id}`,
+    headers: {
+      accept: "application/json",
+      authorization: authorizationHeaderValue,
+    },
+  };
+
+  return await axios
+    .request(options)
+    .then(function (response) {
+      return response.data.data;
+    })
+    .catch(function (error): ErrorResponse {
+      // console.error(error.response.data.errors);
+      const { code, detail } = error.response.data.errors[0];
+
+      console.log(error.errors[0]);
+      return {
+        code,
+        detail,
+      };
+    });
+};

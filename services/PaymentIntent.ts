@@ -25,7 +25,7 @@ type ErrorResponse = {
   code: string;
   detail: string;
 };
-export const createPayment = async (items: IntentItems) => {
+export const createPaymentIntent = async (items: IntentItems) => {
   const options = {
     method: "POST",
     url: `${PAYMONGO_BASE_URL}/payment_intents`,
@@ -57,7 +57,7 @@ export const createPayment = async (items: IntentItems) => {
     });
 };
 
-export const retrievePayment = async (payment_id: string) => {
+export const retrievePaymentIntent = async (payment_id: string) => {
   const options = {
     method: "GET",
     url: `${PAYMONGO_BASE_URL}/payment_intents/${payment_id}`,
