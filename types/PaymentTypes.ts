@@ -109,6 +109,29 @@ const PaymentMethodResponse = z.object({
     metadata: z.null(),
   }),
 });
+
+export const SourceResponse = z.object({
+  id: z.string(),
+  type: z.literal("source"),
+  attributes: z.object({
+    amount: z.number(),
+    billing: z.null(),
+    currency: z.string(),
+    description: z.null(),
+    livemode: z.boolean(),
+    redirect: z.object({
+      checkout_url: z.string().url(),
+      failed: z.string().url(),
+      success: z.string().url(),
+    }),
+    statement_descriptor: z.null(),
+    status: z.string(),
+    type: z.string(),
+    metadata: z.null(),
+    created_at: z.number(),
+    updated_at: z.number(),
+  }),
+});
 export type PaymentResult = z.infer<typeof PaymentResponse>;
 export type CheckoutResult = z.infer<typeof CheckoutResponse>;
 
@@ -140,10 +163,25 @@ export const PaymentTypeSchema = z.object({
   type: z.string(),
 });
 
+export const SourceSchema = z.object({
+  amount: z.number(),
+  redirect: z.object({
+    success: z.string(),
+    failed: z.string(),
+  }),
+  type: z.string(),
+  currency: z.string(),
+});
+
 export const { parse } = z.discriminatedUnion("status", [
   z.object({
     status: z.literal("success"),
-    data: z.union([CheckoutResponse, PaymentResponse, PaymentMethodResponse]),
+    data: z.union([
+      CheckoutResponse,
+      PaymentResponse,
+      PaymentMethodResponse,
+      SourceResponse,
+    ]),
     // data: PaymentResponse,
   }),
   z.object({
