@@ -8,6 +8,7 @@ import {
   addPaymentMethod,
   getPaymentMethod,
   addSource,
+  addPayment,
 } from "../controllers/PaymentController";
 
 const router = express.Router();
@@ -17,7 +18,7 @@ router.post("/create-checkout", addCheckout);
 router.get("/retrieve-checkout", getCheckout);
 router.get("/expire-checkout", deleteCheckout);
 
-// payments
+// payment intents
 router.post("/create-payment-intent", addPaymentIntent);
 router.get("/retrieve-payment-intent", getPaymentIntent);
 
@@ -27,6 +28,9 @@ router.get("/retrieve-payment-method", getPaymentMethod);
 
 // source
 router.post("/create-source", addSource);
+
+// payments
+router.post("/create-payment", addPayment);
 
 // .get("/", getProducts);
 // router

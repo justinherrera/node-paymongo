@@ -39,7 +39,7 @@ export const CheckoutResponse = z.object({
   }),
 });
 
-export const PaymentResponse = z.object({
+export const PaymentIntentResponse = z.object({
   id: z.string(),
   type: z.string(),
   attributes: z.object({
@@ -106,14 +106,51 @@ export const SourceResponse = z.object({
   }),
 });
 
+const PaymentResponse = z.object({
+  id: z.string(),
+  type: z.string(),
+  attributes: z.object({
+    access_url: z.null(),
+    amount: z.number(),
+    balance_transaction_id: z.string(),
+    billing: z.null(),
+    currency: z.string(),
+    description: z.null(),
+    disputed: z.boolean(),
+    external_reference_number: z.null(),
+    fee: z.number(),
+    livemode: z.boolean(),
+    net_amount: z.number(),
+    origin: z.string(),
+    payment_intent_id: z.null(),
+    payout: z.null(),
+    source: z.object({
+      id: z.string(),
+      type: z.string(),
+    }),
+    statement_descriptor: z.string(),
+    status: z.string(),
+    tax_amount: z.null(),
+    metadata: z.null(),
+    refunds: z.array(z.unknown()), // Not enough info to define refund schema
+    taxes: z.array(z.unknown()), // Not enough info to define tax schema
+    available_at: z.number(),
+    created_at: z.number(),
+    credited_at: z.number(),
+    paid_at: z.number(),
+    updated_at: z.number(),
+  }),
+});
+
 export const { parse } = z.discriminatedUnion("status", [
   z.object({
     status: z.literal("success"),
     data: z.union([
       CheckoutResponse,
-      PaymentResponse,
+      PaymentIntentResponse,
       PaymentMethodResponse,
       SourceResponse,
+      PaymentResponse,
     ]),
     // data: PaymentResponse,
   }),

@@ -5,9 +5,10 @@ import {
 } from "../types/PaymentTypes";
 import {
   CheckoutSchema,
-  PaymentSchema,
+  PaymentIntentSchema,
   PaymentTypeSchema,
   SourceSchema,
+  PaymentSchema,
 } from "../types/SchemaTypes";
 import { parse } from "../types/ResponseTypes";
 import {
@@ -23,6 +24,8 @@ import {
   createPaymentIntent,
   retrievePaymentIntent,
 } from "../services/PaymentIntent";
+
+import { createPayment } from "../services/Payment";
 import { createSource } from "../services/PaymentSource";
 import { AppError } from "../middlewares/ErrorHandler";
 import { z } from "zod";
@@ -155,7 +158,9 @@ export const deleteCheckout: PaymentFunc = async (req, res, next) => {
 
 export const addPaymentIntent: PaymentFunc = async (req, res, next) => {
   try {
-    const payment = await createPaymentIntent(PaymentSchema.parse(req.body));
+    const payment = await createPaymentIntent(
+      PaymentIntentSchema.parse(req.body)
+    );
 
     if (payment.code) {
       if (payment.detail.includes("payment_method_type")) {
@@ -312,6 +317,47 @@ export const addSource: PaymentFunc = async (req, res, next) => {
       parse({
         status: "success",
         data: source,
+      })
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.log(error.errors[0]);
+      if (error.errors[0].path) {
+        const path = error.errors[0].path[0];
+        res
+          .status(400)
+          .json(
+            parse({ status: "failed", error: `Field ${path} is required` })
+          );
+      }
+      res
+        .status(400)
+        .json(parse({ status: "failed", error: error.errors[0].message }));
+    }
+
+    res
+      .status(500)
+      .json(parse({ status: "failed", error: "Internal Server Error" }));
+  }
+};
+
+// payments
+
+export const addPayment: PaymentFunc = async (req, res, next) => {
+  try {
+    const payment = await createPayment(PaymentSchema.parse(req.body));
+
+    console.log(payment);
+    if (payment.code) {
+      if (payment.code.includes("resource_not_chargeable_state")) {
+        return next(new AppError(payment.detail, 400));
+      }
+    }
+
+    res.status(200).json(
+      parse({
+        status: "success",
+        data: payment,
       })
     );
   } catch (error) {

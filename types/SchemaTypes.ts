@@ -10,7 +10,7 @@ export const CheckoutSchema = z
   })
   .required();
 
-export const PaymentSchema = z
+export const PaymentIntentSchema = z
   .object({
     amount: z.number(),
     payment_method_allowed: z.array(z.string()),
@@ -26,12 +26,25 @@ export const PaymentTypeSchema = z.object({
   type: z.string(),
 });
 
-export const SourceSchema = z.object({
-  amount: z.number(),
-  redirect: z.object({
-    success: z.string(),
-    failed: z.string(),
-  }),
-  type: z.string(),
-  currency: z.string(),
-});
+export const SourceSchema = z
+  .object({
+    amount: z.number(),
+    redirect: z.object({
+      success: z.string(),
+      failed: z.string(),
+    }),
+    type: z.string(),
+    currency: z.string(),
+  })
+  .required();
+
+export const PaymentSchema = z
+  .object({
+    amount: z.number(),
+    source: z.object({
+      id: z.string(),
+      type: z.string(),
+    }),
+    currency: z.string().max(3),
+  })
+  .required();
