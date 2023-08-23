@@ -1,16 +1,24 @@
 import express, { Request, Response } from "express";
+import { addPayment } from "../controllers/PaymentController";
+
+import {
+  addPaymentMethod,
+  getPaymentMethod,
+} from "../controllers/PaymentMethod";
+
 import {
   addCheckout,
   getCheckout,
   deleteCheckout,
+} from "../controllers/PaymentCheckout";
+
+import {
   addPaymentIntent,
   getPaymentIntent,
-  addPaymentMethod,
-  getPaymentMethod,
-  addSource,
-  addPayment,
   addAttachPaymentIntent,
-} from "../controllers/PaymentController";
+} from "../controllers/PaymentIntentController";
+
+import { addSource } from "../controllers/PaymentSource";
 
 const router = express.Router();
 

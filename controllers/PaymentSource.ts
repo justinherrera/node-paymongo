@@ -1,26 +1,26 @@
 import { PaymentFunc } from "../types/PaymentTypes";
-import { PaymentSchema } from "../types/SchemaTypes";
+import { SourceSchema } from "../types/SchemaTypes";
 import { parse } from "../types/ResponseTypes";
 
-import { createPayment } from "../services/Payment";
+import { createSource } from "../services/PaymentSource";
 import { AppError } from "../middlewares/ErrorHandler";
 import { z } from "zod";
 
-export const addPayment: PaymentFunc = async (req, res, next) => {
+export const addSource: PaymentFunc = async (req, res, next) => {
   try {
-    const payment = await createPayment(PaymentSchema.parse(req.body));
+    const source = await createSource(SourceSchema.parse(req.body));
 
-    // the source id needs to be authorize first
-    if (payment.code) {
-      if (payment.code.includes("resource_not_chargeable_state")) {
-        return next(new AppError(payment.detail, 400));
+    if (source.code) {
+      if (source.detail.includes("payment_method_type")) {
+        return next(new AppError("Invalid Payment Method", 400));
       }
     }
 
+    console.log(source);
     res.status(200).json(
       parse({
         status: "success",
-        data: payment,
+        data: source,
       })
     );
   } catch (error) {
